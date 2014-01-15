@@ -1,0 +1,21 @@
+apply plugin: 'java'
+
+jar {
+    baseName = 'jctest'
+    manifest{
+        attributes("Main-Class":"Console")
+    }
+}
+
+task dist(dependsOn:build) {
+    ext.srcFile = file("build/libs/jctest.jar")
+    ext.destDir = new File(buildDir,'dist/linux')
+    inputs.file srcFile
+    outputs.dir destDir
+    doLast{
+        destDir.mkdirs()
+        File f = new File(destDir,"jctest");
+        f.append(new File("build-scripts/stub.sh").getBytes())
+        f.append(new File("build/libs/jctest.jar").getBytes());
+    }
+}
