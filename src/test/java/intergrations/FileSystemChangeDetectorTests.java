@@ -7,7 +7,9 @@ import com.google.common.io.Files;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -56,11 +58,32 @@ public class FileSystemChangeDetectorTests {
         assertThat(_receiver.hasReceivedChanged()).isTrue();
     }
 
+    @Test
+    public void fileChanged_changedEventFired() throws IOException {
+        File file = new File(_tmpDir.getAbsolutePath()+"/test");
+        file.createNewFile();
+
+        _detector.pump();
+        _receiver.reset();
+
+        try(BufferedWriter writer = new BufferedWriter(new FileWriter(file))){
+            writer.write("test");
+        }
+
+        _detector.pump();
+
+        assertThat(_receiver.hasReceivedChanged()).isTrue();
+    }
+
     class DetectionReceiver {
         private boolean _hasReceivedChanged;
 
         public boolean hasReceivedChanged(){
             return _hasReceivedChanged;
+        }
+
+        public void reset(){
+            _hasReceivedChanged = false;
         }
 
         @Subscribe

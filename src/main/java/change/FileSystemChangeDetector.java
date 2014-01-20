@@ -4,6 +4,7 @@ import com.google.common.eventbus.EventBus;
 
 import java.io.IOException;
 import java.nio.file.*;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class FileSystemChangeDetector {
@@ -35,6 +36,8 @@ public class FileSystemChangeDetector {
         if(key == null) return;
 
         _eventBus.post(new DetectedChange());
+
+        key.reset();
     }
 
     public void register(Object o) {
