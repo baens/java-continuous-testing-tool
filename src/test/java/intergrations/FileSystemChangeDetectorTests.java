@@ -54,7 +54,6 @@ public class FileSystemChangeDetectorTests {
 
         @Subscribe
         public void change(DetectedChange e){
-            System.out.println("....");
             _hasReceivedChanged = true;
         }
     }
