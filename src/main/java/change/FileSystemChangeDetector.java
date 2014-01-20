@@ -18,7 +18,9 @@ public class FileSystemChangeDetector {
         try {
             FileSystem fileSystem = FileSystems.getDefault();
             _watchService = fileSystem.newWatchService();
-            _watchKey = fileSystem.getPath(absolutePath).register(_watchService, StandardWatchEventKinds.ENTRY_CREATE);
+            _watchKey = fileSystem.getPath(absolutePath).register(_watchService,
+                    StandardWatchEventKinds.ENTRY_CREATE,
+                    StandardWatchEventKinds.ENTRY_MODIFY);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -34,6 +36,8 @@ public class FileSystemChangeDetector {
         }
 
         if(key == null) return;
+
+        List<WatchEvent<?>> events = key.pollEvents();
 
         _eventBus.post(new DetectedChange());
 

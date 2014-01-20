@@ -75,8 +75,19 @@ public class FileSystemChangeDetectorTests {
         assertThat(_receiver.hasReceivedChanged()).isTrue();
     }
 
+    @Test
+    public void pump_eventQueueCleared() throws IOException {
+        new File(_tmpDir.getAbsolutePath()+"/test").createNewFile();
+
+        _detector.pump();
+        _detector.pump();
+
+        assertThat(_receiver.receiveCount()).isEqualTo(1);
+    }
+
     class DetectionReceiver {
         private boolean _hasReceivedChanged;
+        private int _receiveCount;
 
         public boolean hasReceivedChanged(){
             return _hasReceivedChanged;
@@ -84,11 +95,17 @@ public class FileSystemChangeDetectorTests {
 
         public void reset(){
             _hasReceivedChanged = false;
+            _receiveCount = 0;
         }
 
         @Subscribe
         public void change(DetectedChange e){
             _hasReceivedChanged = true;
+            _receiveCount += 1;
+        }
+
+        public int receiveCount() {
+            return _receiveCount;
         }
     }
 }
