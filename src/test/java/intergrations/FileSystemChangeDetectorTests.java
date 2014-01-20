@@ -45,6 +45,17 @@ public class FileSystemChangeDetectorTests {
         assertThat(_receiver.hasReceivedChanged()).isTrue();
     }
 
+    @Test
+    public void fileInSubFolderCreated_changeEventFired() throws IOException {
+        File file = new File(_tmpDir.getAbsolutePath()+"/sub-folder/test");
+        file.mkdirs();
+        file.createNewFile();
+
+       _detector.pump();
+
+        assertThat(_receiver.hasReceivedChanged()).isTrue();
+    }
+
     class DetectionReceiver {
         private boolean _hasReceivedChanged;
 
