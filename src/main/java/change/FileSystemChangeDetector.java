@@ -27,7 +27,7 @@ public class FileSystemChangeDetector {
         WatchKey key;
 
         try {
-            key = _watchService.poll(1, TimeUnit.SECONDS);
+            key = _watchService.poll(1, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
