@@ -49,7 +49,7 @@ public class FileSystemChangeDetectorTests {
 
     @Test
     public void fileInSubFolderCreated_changeEventFired() throws IOException {
-        createFile("sub-folder/test");
+        createFile("sub-folder/test",true);
 
        _detector.pump();
 
@@ -97,12 +97,13 @@ public class FileSystemChangeDetectorTests {
     }
 
     private File createFile() throws IOException {
-        return createFile("test");
+        return createFile("test",false);
     }
 
-    private File createFile(String filePath) throws IOException {
+    private File createFile(String filePath, boolean createFolder) throws IOException {
         File file = new File(_tmpDir.getAbsolutePath()+"/"+filePath);
-        file.mkdirs();
+        if(createFolder)
+            file.mkdirs();
         file.createNewFile();
         return file;
     }
