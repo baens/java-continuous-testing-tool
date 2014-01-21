@@ -93,7 +93,7 @@ public class FileSystemChangeDetectorTests {
         _detector.pump();
         _detector.pump();
 
-        assertThat(_receiver.receiveCount()).isEqualTo(1);
+        assertThat(_receiver.changeCount()).isEqualTo(1);
     }
 
     private File createFile() throws IOException {
@@ -120,14 +120,14 @@ public class FileSystemChangeDetectorTests {
             _receiveCount = 0;
         }
 
+        public int changeCount() {
+            return _receiveCount;
+        }
+
         @Subscribe
         public void change(DetectedChange e){
             _hasReceivedChanged = true;
             _receiveCount += 1;
-        }
-
-        public int receiveCount() {
-            return _receiveCount;
         }
     }
 }
