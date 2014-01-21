@@ -17,6 +17,8 @@ jar {
     manifest{
         attributes("Main-Class":"Console")
     }
+
+    from(configurations.compile.collect { it.isDirectory() ? it : zipTree(it)})
 }
 
 task dist(dependsOn:build) {
