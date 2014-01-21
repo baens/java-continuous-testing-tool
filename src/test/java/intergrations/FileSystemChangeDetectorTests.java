@@ -57,6 +57,23 @@ public class FileSystemChangeDetectorTests {
     }
 
     @Test
+    public void fileInSubFolderCreate_folderCreatedBeforeWatch_changeEventFired() throws IOException {
+        createFile("sub-folder/test",true);
+
+        _detector = new FileSystemChangeDetector(_tmpDir.getAbsolutePath());
+
+        _detector.register(_receiver);
+
+        _receiver.reset();
+
+        createFile("sub-folder/test2",false);
+
+        _detector.pump();
+
+        assertThat(_receiver.hasReceivedChanged()).isTrue();
+    }
+
+    @Test
     public void fileChanged_changedEventFired() throws IOException {
         File file = createFile();
 
