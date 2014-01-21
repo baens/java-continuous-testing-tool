@@ -40,7 +40,7 @@ public class FileSystemChangeDetectorTests {
 
     @Test
     public void fileCreated_changeEventFired() throws IOException, InterruptedException {
-        new File(_tmpDir.getAbsolutePath()+"/test").createNewFile();
+        createFile();
 
         _detector.pump();
 
@@ -49,9 +49,7 @@ public class FileSystemChangeDetectorTests {
 
     @Test
     public void fileInSubFolderCreated_changeEventFired() throws IOException {
-        File file = new File(_tmpDir.getAbsolutePath()+"/sub-folder/test");
-        file.mkdirs();
-        file.createNewFile();
+        createFile("sub-folder/test");
 
        _detector.pump();
 
@@ -60,8 +58,7 @@ public class FileSystemChangeDetectorTests {
 
     @Test
     public void fileChanged_changedEventFired() throws IOException {
-        File file = new File(_tmpDir.getAbsolutePath()+"/test");
-        file.createNewFile();
+        File file = createFile();
 
         _detector.pump();
         _receiver.reset();
@@ -76,6 +73,20 @@ public class FileSystemChangeDetectorTests {
     }
 
     @Test
+    public void fileDeleted_changeEventFired() throws IOException {
+        File file = createFile();
+
+        _detector.pump();
+        _receiver.reset();
+
+        file.delete();
+
+        _detector.pump();
+
+        assertThat(_receiver.hasReceivedChanged()).isTrue();
+    }
+
+    @Test
     public void pump_eventQueueCleared() throws IOException {
         new File(_tmpDir.getAbsolutePath()+"/test").createNewFile();
 
@@ -83,6 +94,17 @@ public class FileSystemChangeDetectorTests {
         _detector.pump();
 
         assertThat(_receiver.receiveCount()).isEqualTo(1);
+    }
+
+    private File createFile() throws IOException {
+        return createFile("test");
+    }
+
+    private File createFile(String filePath) throws IOException {
+        File file = new File(_tmpDir.getAbsolutePath()+"/"+filePath);
+        file.mkdirs();
+        file.createNewFile();
+        return file;
     }
 
     class DetectionReceiver {

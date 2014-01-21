@@ -20,7 +20,8 @@ public class FileSystemChangeDetector {
             _watchService = fileSystem.newWatchService();
             _watchKey = fileSystem.getPath(absolutePath).register(_watchService,
                     StandardWatchEventKinds.ENTRY_CREATE,
-                    StandardWatchEventKinds.ENTRY_MODIFY);
+                    StandardWatchEventKinds.ENTRY_MODIFY,
+                    StandardWatchEventKinds.ENTRY_DELETE);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
